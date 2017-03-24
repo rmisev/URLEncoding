@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		293B50B81E852A1000F3746B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 293B50B71E852A1000F3746B /* main.m */; };
+		293B50C01E852FF000F3746B /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 293B50BF1E852FF000F3746B /* NSString+URLEncoding.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,8 @@
 /* Begin PBXFileReference section */
 		293B50B41E852A1000F3746B /* Test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Test; sourceTree = BUILT_PRODUCTS_DIR; };
 		293B50B71E852A1000F3746B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		293B50BE1E852FF000F3746B /* NSString+URLEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+URLEncoding.h"; path = "URLEncoding/NSString+URLEncoding.h"; sourceTree = "<group>"; };
+		293B50BF1E852FF000F3746B /* NSString+URLEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+URLEncoding.m"; path = "URLEncoding/NSString+URLEncoding.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +44,7 @@
 		293B50AB1E852A0F00F3746B = {
 			isa = PBXGroup;
 			children = (
+				293B50C11E85300B00F3746B /* URLEncoding */,
 				293B50B61E852A1000F3746B /* Test */,
 				293B50B51E852A1000F3746B /* Products */,
 			);
@@ -60,6 +64,15 @@
 				293B50B71E852A1000F3746B /* main.m */,
 			);
 			path = Test;
+			sourceTree = "<group>";
+		};
+		293B50C11E85300B00F3746B /* URLEncoding */ = {
+			isa = PBXGroup;
+			children = (
+				293B50BE1E852FF000F3746B /* NSString+URLEncoding.h */,
+				293B50BF1E852FF000F3746B /* NSString+URLEncoding.m */,
+			);
+			name = URLEncoding;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -117,6 +130,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				293B50C01E852FF000F3746B /* NSString+URLEncoding.m in Sources */,
 				293B50B81E852A1000F3746B /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -236,6 +250,7 @@
 				293B50BD1E852A1000F3746B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
