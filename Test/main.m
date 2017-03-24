@@ -7,11 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "NSString+URLEncoding.h"
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        // insert code here...
-        NSLog(@"Hello, World!");
+        NSString* str = [@"Percent-%-KITI- \"#<>?`{}"
+                         stringByAddingPercentEncodingForUrlPath];
+
+        NSLog(@"Result: %@", str);
     }
     return 0;
 }
