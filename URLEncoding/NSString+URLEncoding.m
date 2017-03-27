@@ -5,7 +5,6 @@
 //  (c) Rimas Misevičius
 //
 
-#import <Foundation/Foundation.h>
 #import "NSString+URLEncoding.h"
 
 
