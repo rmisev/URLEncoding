@@ -54,7 +54,7 @@ static NSCharacterSet *allowedInFragment = nil;
 }
 
 - (nullable NSString *)percentEncodeUrlPath {
-    return [self
+    return [[self stringByReplacingOccurrencesOfString:@"\\" withString:@"/"]
             stringByAddingPercentEncodingWithAllowedCharacters:
             allowedInPath];
 }
