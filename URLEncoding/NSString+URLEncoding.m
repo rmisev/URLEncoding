@@ -31,4 +31,8 @@ static NSMutableCharacterSet *allowedInPath = nil;
           allowedInPath];
 }
 
+- (BOOL)isEqualIgnoreCase:(NSString *)aString range:(NSRange)rangeOfReceiver {
+    return ([self compare:aString options:NSCaseInsensitiveSearch range:rangeOfReceiver] == NSOrderedSame);
+}
+
 @end

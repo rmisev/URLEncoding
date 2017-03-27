@@ -11,4 +11,6 @@
 
 @property(readonly, copy) NSString *stringByAddingPercentEncodingForUrlPath;
 
+- (BOOL)isEqualIgnoreCase:(NSString *)aString range:(NSRange)rangeOfReceiver;
+
 @end
