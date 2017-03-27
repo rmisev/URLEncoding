@@ -100,16 +100,18 @@ static NSCharacterSet *allowedInFragment = nil;
     }
     if (scheme == nil) return self;
     
-    // count slashes
-    NSInteger countSlashes = 0;
-    for (NSInteger ind = endOfProtocol; ind < self.length; ind++) {
-        unichar ch = [self characterAtIndex:ind];
+    // find end of slashes
+    NSInteger endOfSlashes = endOfProtocol;
+    while (endOfSlashes < self.length) {
+        unichar ch = [self characterAtIndex:endOfSlashes];
         if (ch != '/' && ch != '\\') break;
-        countSlashes++;
+        endOfSlashes++
     }
+    if (endOfSlashes == self.length)
+        return nil; // error: no host
 
     // authority
-    const NSRange rangeOfAuth = [self findPart:endOfAuthChars fromIndex:endOfProtocol + countSlashes];
+    const NSRange rangeOfAuth = [self findPart:endOfAuthChars fromIndex:endOfSlashes];
     
     // after authority
     NSRange rangeOfPath = NSMakeRange(0, 0);
