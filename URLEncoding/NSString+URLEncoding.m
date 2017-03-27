@@ -15,20 +15,20 @@ static NSMutableCharacterSet *allowedInPath = nil;
 
 + (void)initialize
 {
-  if (!allowedInPath) {
-    // https://url.spec.whatwg.org/#path-percent-encode-set
-    NSRange initRange;
-    initRange.location = 0x20;
-    initRange.length = 0x7e - 0x20 + 1;
-    allowedInPath = [NSMutableCharacterSet characterSetWithRange:initRange];
-    [allowedInPath removeCharactersInString:@" \"#<>?`{}"];
-  }
+    if (!allowedInPath) {
+        // https://url.spec.whatwg.org/#path-percent-encode-set
+        NSRange initRange;
+        initRange.location = 0x20;
+        initRange.length = 0x7e - 0x20 + 1;
+        allowedInPath = [NSMutableCharacterSet characterSetWithRange:initRange];
+        [allowedInPath removeCharactersInString:@" \"#<>?`{}"];
+    }
 }
 
 - (nullable NSString *)stringByAddingPercentEncodingForUrlPath {
-  return [self
-          stringByAddingPercentEncodingWithAllowedCharacters:
-          allowedInPath];
+    return [self
+            stringByAddingPercentEncodingWithAllowedCharacters:
+            allowedInPath];
 }
 
 - (BOOL)isEqualIgnoreCase:(NSString *)aString range:(NSRange)rangeOfReceiver {
