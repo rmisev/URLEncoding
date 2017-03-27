@@ -146,6 +146,8 @@ static NSCharacterSet *allowedInFragment = nil;
     [normUrl appendString:[self substringWithRange:rangeOfAuth]];
     if (rangeOfPath.length > 0)
         [normUrl appendString:[[self substringWithRange:rangeOfPath] percentEncodeUrlPath]];
+    else
+        [normUrl appendString:@"/"];
     if (rangeOfQuery.length > 0)
         [normUrl appendString:[[self substringWithRange:rangeOfQuery] percentEncodeUrlQuery]];
     if (rangeOfFragment.length > 0)
