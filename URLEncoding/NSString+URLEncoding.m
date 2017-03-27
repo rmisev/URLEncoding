@@ -9,12 +9,24 @@
 #import "NSString+URLEncoding.h"
 
 
+static NSDictionary *schemePortDic = nil;
 static NSMutableCharacterSet *allowedInPath = nil;
 
 @implementation NSString (URLEncoding)
 
 + (void)initialize
 {
+    if (!schemePortDic) {
+        // https://url.spec.whatwg.org/#special-scheme
+        schemePortDic = @{
+                          @"ftp": @21,
+                          @"gopher": @70,
+                          @"http": @80,
+                          @"https": @443,
+                          @"ws": @80,
+                          @"wss": @443
+                          };
+    }
     if (!allowedInPath) {
         // https://url.spec.whatwg.org/#path-percent-encode-set
         NSRange initRange;
