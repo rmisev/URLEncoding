@@ -84,13 +84,13 @@ static NSCharacterSet *allowedInFragment = nil;
 }
 
 - (nullable NSString *)normalizeUrl {
-    // is scheme?
+    // has scheme?
     NSRange r = [self rangeOfString:@":" options:NSLiteralSearch];
     if (r.location == NSNotFound) return nil;
     const NSRange rangeOfScheme = NSMakeRange(0, r.location);
     const NSInteger endOfProtocol = r.location + 1; // skip ":"
     
-    // is supported scheme?
+    // is the scheme supported?
     NSString *scheme = nil;
     for (NSString *specScheme in schemePortDic) {
         if ([self isEqualIgnoreCase:specScheme range:rangeOfScheme]) {
