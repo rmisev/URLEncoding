@@ -9,8 +9,8 @@
 
 @interface NSString (URLEncoding)
 
-@property(readonly, copy) NSString *stringByAddingPercentEncodingForUrlPath;
 @property(readonly, copy) NSString *normalizeUrl;
+@property(readonly, copy) NSString *percentEncodeUrlPath;
 
 - (BOOL)isEqualIgnoreCase:(NSString *)aString range:(NSRange)rangeOfReceiver;
 

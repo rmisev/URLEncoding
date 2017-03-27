@@ -13,6 +13,8 @@ static NSDictionary *schemePortDic = nil;
 static NSCharacterSet *endOfAuthChars = nil;
 static NSCharacterSet *endOfPathChars = nil;
 static NSMutableCharacterSet *allowedInPath = nil;
+static NSMutableCharacterSet *allowedInQuery = nil;
+static NSCharacterSet *allowedInFragment = nil;
 
 @implementation NSString (URLEncoding)
 
@@ -34,19 +36,40 @@ static NSMutableCharacterSet *allowedInPath = nil;
         endOfPathChars = [NSCharacterSet characterSetWithCharactersInString:@"?#"];
     }
     if (!allowedInPath) {
+        NSRange rangeNotC0;
+        rangeNotC0.location = 0x20;
+        rangeNotC0.length = 0x7f - 0x20;
+        
         // https://url.spec.whatwg.org/#path-percent-encode-set
-        NSRange initRange;
-        initRange.location = 0x20;
-        initRange.length = 0x7e - 0x20 + 1;
-        allowedInPath = [NSMutableCharacterSet characterSetWithRange:initRange];
+        allowedInPath = [NSMutableCharacterSet characterSetWithRange:rangeNotC0];
         [allowedInPath removeCharactersInString:@" \"#<>?`{}"];
+        
+        // https://url.spec.whatwg.org/#query-state
+        allowedInQuery = [NSMutableCharacterSet characterSetWithRange:rangeNotC0];
+        [allowedInQuery removeCharactersInString:@"\x22\x23\x3C\x3E"];
+        
+        // https://url.spec.whatwg.org/#c0-control-percent-encode-set
+        allowedInFragment = [NSCharacterSet characterSetWithRange:rangeNotC0];
     }
 }
 
-- (nullable NSString *)stringByAddingPercentEncodingForUrlPath {
+- (nullable NSString *)percentEncodeUrlPath {
     return [self
             stringByAddingPercentEncodingWithAllowedCharacters:
             allowedInPath];
+}
+
+- (nullable NSString *)percentEncodeUrlQuery {
+    return [self
+            stringByAddingPercentEncodingWithAllowedCharacters:
+            allowedInQuery];
+}
+
+- (nullable NSString *)normalizeUrlFragment {
+    // https://url.spec.whatwg.org/#fragment-state
+    return [[self stringByReplacingOccurrencesOfString:@"\x00" withString:@""]
+            stringByAddingPercentEncodingWithAllowedCharacters:
+            allowedInFragment];
 }
 
 - (BOOL)isEqualIgnoreCase:(NSString *)aString range:(NSRange)rangeOfReceiver {
@@ -93,23 +116,27 @@ static NSMutableCharacterSet *allowedInPath = nil;
     NSRange rangeOfPath = NSMakeRange(0, 0);
     NSRange rangeOfQuery = NSMakeRange(0, 0);
     NSRange rangeOfFragment = NSMakeRange(0, 0);
-    NSInteger indNext = NSMaxRange(rangeOfAuth);
-    if (indNext < self.length) {
-        unichar ch = [self characterAtIndex:indNext];
+    NSInteger indexOfCh = NSMaxRange(rangeOfAuth);
+    if (indexOfCh < self.length) {
+        unichar ch = [self characterAtIndex:indexOfCh];
         if (ch == '/' || ch == '\\') {
-            rangeOfPath = [self findPart:endOfPathChars fromIndex:indNext];
-            indNext = NSMaxRange(rangeOfPath);
-            if (indNext < self.length)
-                ch = [self characterAtIndex:indNext];
+            rangeOfPath = [self findPart:endOfPathChars fromIndex:indexOfCh];
+            NSInteger ind = NSMaxRange(rangeOfPath);
+            if (ind < self.length) {
+                indexOfCh = ind;
+                ch = [self characterAtIndex:indexOfCh];
+            }
         }
         if (ch == '?') {
-            rangeOfQuery = [self findPart:[NSCharacterSet characterSetWithCharactersInString:@"#"] fromIndex:indNext];
-            indNext = NSMaxRange(rangeOfQuery);
-            if (indNext < self.length)
-                ch = [self characterAtIndex:indNext];
+            rangeOfQuery = [self findPart:[NSCharacterSet characterSetWithCharactersInString:@"#"] fromIndex:indexOfCh];
+            NSInteger ind = NSMaxRange(rangeOfQuery);
+            if (ind < self.length) {
+                indexOfCh = ind;
+                ch = [self characterAtIndex:indexOfCh];
+            }
         }
         if (ch == '#') {
-            rangeOfFragment = NSMakeRange(indNext, self.length - indNext);
+            rangeOfFragment = NSMakeRange(indexOfCh, self.length - indexOfCh);
         }
     }
     
@@ -119,11 +146,11 @@ static NSMutableCharacterSet *allowedInPath = nil;
     [normUrl appendString:@"://"];
     [normUrl appendString:[self substringWithRange:rangeOfAuth]];
     if (rangeOfPath.length > 0)
-        [normUrl appendString:[[self substringWithRange:rangeOfPath] stringByAddingPercentEncodingForUrlPath]];
+        [normUrl appendString:[[self substringWithRange:rangeOfPath] percentEncodeUrlPath]];
     if (rangeOfQuery.length > 0)
-        [normUrl appendString:[self substringWithRange:rangeOfQuery]];
+        [normUrl appendString:[[self substringWithRange:rangeOfQuery] percentEncodeUrlQuery]];
     if (rangeOfFragment.length > 0)
-        [normUrl appendString:[self substringWithRange:rangeOfFragment]];
+        [normUrl appendString:[[self substringWithRange:rangeOfFragment] normalizeUrlFragment]];
     
     return normUrl;
 }
