@@ -11,10 +11,11 @@
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        NSString* str = [@"Percent-%-KITI- \"#<>?`{}"
-                         stringByAddingPercentEncodingForUrlPath];
-
-        NSLog(@"Result: %@", str);
+        NSString *str = (@"Percent-%- \"#<>?`{}").percentEncodeUrlPath;
+        NSLog(@"Path: %@", str);
+        
+        NSURL *url = (@"HTTP://example.com/Percent-%23- \"<>`{}").ParseURL;
+        NSLog(@"URL: %@", url);
     }
     return 0;
 }
