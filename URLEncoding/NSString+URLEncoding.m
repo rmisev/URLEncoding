@@ -175,4 +175,9 @@ static NSRegularExpression *regexTabNewline;
     return normUrl;
 }
 
+- (nullable NSURL *)ParseURL {
+    NSURL *url = [NSURL URLWithString:[self normalizeUrlString]];
+    return url != nil ? url.standardizedURL : nil;
+}
+
 @end

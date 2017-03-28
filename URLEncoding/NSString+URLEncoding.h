@@ -9,6 +9,7 @@
 
 @interface NSString (URLEncoding)
 
+@property(readonly, copy) NSURL *ParseURL;
 @property(readonly, copy) NSString *normalizeUrlString;
 @property(readonly, copy) NSString *percentEncodeUrlPath;
 
