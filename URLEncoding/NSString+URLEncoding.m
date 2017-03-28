@@ -63,19 +63,19 @@ static NSRegularExpression *regexTabNewline;
             withTemplate:@""];
 }
 
-- (nullable NSString *)percentEncodeUrlPath {
+- (NSString *)percentEncodeUrlPath {
     return [[self stringByReplacingOccurrencesOfString:@"\\" withString:@"/"]
             stringByAddingPercentEncodingWithAllowedCharacters:
             allowedInPath];
 }
 
-- (nullable NSString *)percentEncodeUrlQuery {
+- (NSString *)percentEncodeUrlQuery {
     return [self
             stringByAddingPercentEncodingWithAllowedCharacters:
             allowedInQuery];
 }
 
-- (nullable NSString *)normalizeUrlFragment {
+- (NSString *)normalizeUrlFragment {
     // https://url.spec.whatwg.org/#fragment-state
     return [[self stringByReplacingOccurrencesOfString:@"\x00" withString:@""]
             stringByAddingPercentEncodingWithAllowedCharacters:
