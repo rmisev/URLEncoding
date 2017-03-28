@@ -84,8 +84,12 @@ static NSCharacterSet *allowedInFragment = nil;
 }
 
 - (nullable NSString *)normalizeUrl {
+    // trim C0 controls and spaces
+    NSCharacterSet *charsC0SP = [NSCharacterSet characterSetWithRange:NSMakeRange(0, 0x21)];
+    NSString *strUrl = [self stringByTrimmingCharactersInSet:charsC0SP];
+
     // has scheme?
-    NSRange r = [self rangeOfString:@":" options:NSLiteralSearch];
+    NSRange r = [strUrl rangeOfString:@":" options:NSLiteralSearch];
     if (r.location == NSNotFound) return nil;
     const NSRange rangeOfScheme = NSMakeRange(0, r.location);
     const NSInteger endOfProtocol = r.location + 1; // skip ":"
@@ -93,67 +97,67 @@ static NSCharacterSet *allowedInFragment = nil;
     // is the scheme supported?
     NSString *scheme = nil;
     for (NSString *specScheme in schemePortDic) {
-        if ([self isEqualIgnoreCase:specScheme range:rangeOfScheme]) {
+        if ([strUrl isEqualIgnoreCase:specScheme range:rangeOfScheme]) {
             scheme = specScheme;
             break;
         }
     }
-    if (scheme == nil) return self;
+    if (scheme == nil) return strUrl;
 
     // find end of slashes
     NSInteger endOfSlashes = endOfProtocol;
-    while (endOfSlashes < self.length) {
-        unichar ch = [self characterAtIndex:endOfSlashes];
+    while (endOfSlashes < strUrl.length) {
+        unichar ch = [strUrl characterAtIndex:endOfSlashes];
         if (ch != '/' && ch != '\\') break;
         endOfSlashes++;
     }
-    if (endOfSlashes == self.length)
+    if (endOfSlashes == strUrl.length)
         return nil; // error: no host
 
     // authority
-    const NSRange rangeOfAuth = [self findPart:endOfAuthChars fromIndex:endOfSlashes];
+    const NSRange rangeOfAuth = [strUrl findPart:endOfAuthChars fromIndex:endOfSlashes];
 
     // after authority
     NSRange rangeOfPath = NSMakeRange(0, 0);
     NSRange rangeOfQuery = NSMakeRange(0, 0);
     NSRange rangeOfFragment = NSMakeRange(0, 0);
     NSInteger indexOfCh = NSMaxRange(rangeOfAuth);
-    if (indexOfCh < self.length) {
-        unichar ch = [self characterAtIndex:indexOfCh];
+    if (indexOfCh < strUrl.length) {
+        unichar ch = [strUrl characterAtIndex:indexOfCh];
         if (ch == '/' || ch == '\\') {
-            rangeOfPath = [self findPart:endOfPathChars fromIndex:indexOfCh];
+            rangeOfPath = [strUrl findPart:endOfPathChars fromIndex:indexOfCh];
             NSInteger ind = NSMaxRange(rangeOfPath);
-            if (ind < self.length) {
+            if (ind < strUrl.length) {
                 indexOfCh = ind;
-                ch = [self characterAtIndex:indexOfCh];
+                ch = [strUrl characterAtIndex:indexOfCh];
             }
         }
         if (ch == '?') {
-            rangeOfQuery = [self findPart:[NSCharacterSet characterSetWithCharactersInString:@"#"] fromIndex:indexOfCh];
+            rangeOfQuery = [strUrl findPart:[NSCharacterSet characterSetWithCharactersInString:@"#"] fromIndex:indexOfCh];
             NSInteger ind = NSMaxRange(rangeOfQuery);
-            if (ind < self.length) {
+            if (ind < strUrl.length) {
                 indexOfCh = ind;
-                ch = [self characterAtIndex:indexOfCh];
+                ch = [strUrl characterAtIndex:indexOfCh];
             }
         }
         if (ch == '#') {
-            rangeOfFragment = NSMakeRange(indexOfCh, self.length - indexOfCh);
+            rangeOfFragment = NSMakeRange(indexOfCh, strUrl.length - indexOfCh);
         }
     }
 
     // make normalized URL
-    NSMutableString *normUrl = [NSMutableString stringWithCapacity:self.length];
+    NSMutableString *normUrl = [NSMutableString stringWithCapacity:strUrl.length];
     [normUrl appendString:scheme];
     [normUrl appendString:@"://"];
-    [normUrl appendString:[self substringWithRange:rangeOfAuth]];
+    [normUrl appendString:[strUrl substringWithRange:rangeOfAuth]];
     if (rangeOfPath.length > 0)
-        [normUrl appendString:[[self substringWithRange:rangeOfPath] percentEncodeUrlPath]];
+        [normUrl appendString:[[strUrl substringWithRange:rangeOfPath] percentEncodeUrlPath]];
     else
         [normUrl appendString:@"/"];
     if (rangeOfQuery.length > 0)
-        [normUrl appendString:[[self substringWithRange:rangeOfQuery] percentEncodeUrlQuery]];
+        [normUrl appendString:[[strUrl substringWithRange:rangeOfQuery] percentEncodeUrlQuery]];
     if (rangeOfFragment.length > 0)
-        [normUrl appendString:[[self substringWithRange:rangeOfFragment] normalizeUrlFragment]];
+        [normUrl appendString:[[strUrl substringWithRange:rangeOfFragment] normalizeUrlFragment]];
 
     return normUrl;
 }
