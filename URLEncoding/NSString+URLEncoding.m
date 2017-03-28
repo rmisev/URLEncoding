@@ -158,7 +158,7 @@ static NSRegularExpression *regexTabNewline;
         }
     }
 
-    // make normalized URL
+    // make normalized URL string
     NSMutableString *normUrl = [NSMutableString stringWithCapacity:strUrl.length];
     [normUrl appendString:scheme];
     [normUrl appendString:@"://"];
@@ -177,6 +177,7 @@ static NSRegularExpression *regexTabNewline;
 
 - (nullable NSURL *)ParseURL {
     NSURL *url = [NSURL URLWithString:self.normalizeUrlString];
+    // resolve ".." and "." in the path (standardizedURL)
     return url != nil ? url.standardizedURL : nil;
 }
 
