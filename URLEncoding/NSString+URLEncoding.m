@@ -105,7 +105,7 @@ static NSCharacterSet *allowedInFragment = nil;
     while (endOfSlashes < self.length) {
         unichar ch = [self characterAtIndex:endOfSlashes];
         if (ch != '/' && ch != '\\') break;
-        endOfSlashes++
+        endOfSlashes++;
     }
     if (endOfSlashes == self.length)
         return nil; // error: no host
