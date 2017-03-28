@@ -14,6 +14,7 @@ static NSCharacterSet *endOfPathChars = nil;
 static NSMutableCharacterSet *allowedInPath = nil;
 static NSMutableCharacterSet *allowedInQuery = nil;
 static NSCharacterSet *allowedInFragment = nil;
+static NSRegularExpression *regexTabNewline;
 
 @implementation NSString (URLEncoding)
 
@@ -29,6 +30,8 @@ static NSCharacterSet *allowedInFragment = nil;
                           @"ws": @80,
                           @"wss": @443
                           };
+        // https://infra.spec.whatwg.org/#ascii-tab-or-newline
+        regexTabNewline = [NSRegularExpression regularExpressionWithPattern:@"[\\t\\n\\r]" options:0 error:nil];
     }
     if (!endOfAuthChars) {
         endOfAuthChars = [NSCharacterSet characterSetWithCharactersInString:@"/\\?#"];
@@ -50,6 +53,14 @@ static NSCharacterSet *allowedInFragment = nil;
         // https://url.spec.whatwg.org/#c0-control-percent-encode-set
         allowedInFragment = [NSCharacterSet characterSetWithRange:rangeNotC0];
     }
+}
+
+- (NSString *)stringByRemovingTabNewline {
+    return [regexTabNewline
+            stringByReplacingMatchesInString:self
+            options:0
+            range:NSMakeRange(0, self.length)
+            withTemplate:@""];
 }
 
 - (nullable NSString *)percentEncodeUrlPath {
@@ -87,6 +98,8 @@ static NSCharacterSet *allowedInFragment = nil;
     // trim C0 controls and spaces
     NSCharacterSet *charsC0SP = [NSCharacterSet characterSetWithRange:NSMakeRange(0, 0x21)];
     NSString *strUrl = [self stringByTrimmingCharactersInSet:charsC0SP];
+    // remove all ASCII tab or newline
+    strUrl = [strUrl stringByRemovingTabNewline];
 
     // has scheme?
     NSRange r = [strUrl rangeOfString:@":" options:NSLiteralSearch];
