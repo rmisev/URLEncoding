@@ -99,7 +99,7 @@ static NSRegularExpression *regexTabNewline;
     NSCharacterSet *charsC0SP = [NSCharacterSet characterSetWithRange:NSMakeRange(0, 0x21)];
     NSString *strUrl = [self stringByTrimmingCharactersInSet:charsC0SP];
     // remove all ASCII tab or newline
-    strUrl = [strUrl stringByRemovingTabNewline];
+    strUrl = strUrl.stringByRemovingTabNewline;
 
     // has scheme?
     NSRange r = [strUrl rangeOfString:@":" options:NSLiteralSearch];
@@ -164,19 +164,19 @@ static NSRegularExpression *regexTabNewline;
     [normUrl appendString:@"://"];
     [normUrl appendString:[strUrl substringWithRange:rangeOfAuth]];
     if (rangeOfPath.length > 0)
-        [normUrl appendString:[[strUrl substringWithRange:rangeOfPath] percentEncodeUrlPath]];
+        [normUrl appendString:[strUrl substringWithRange:rangeOfPath].percentEncodeUrlPath];
     else
         [normUrl appendString:@"/"];
     if (rangeOfQuery.length > 0)
-        [normUrl appendString:[[strUrl substringWithRange:rangeOfQuery] percentEncodeUrlQuery]];
+        [normUrl appendString:[strUrl substringWithRange:rangeOfQuery].percentEncodeUrlQuery];
     if (rangeOfFragment.length > 0)
-        [normUrl appendString:[[strUrl substringWithRange:rangeOfFragment] normalizeUrlFragment]];
+        [normUrl appendString:[strUrl substringWithRange:rangeOfFragment].normalizeUrlFragment];
 
     return normUrl;
 }
 
 - (nullable NSURL *)ParseURL {
-    NSURL *url = [NSURL URLWithString:[self normalizeUrlString]];
+    NSURL *url = [NSURL URLWithString:self.normalizeUrlString];
     return url != nil ? url.standardizedURL : nil;
 }
 
