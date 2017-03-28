@@ -94,7 +94,7 @@ static NSRegularExpression *regexTabNewline;
         : NSMakeRange(rangeToSearch.location, r.location - rangeToSearch.location);
 }
 
-- (nullable NSString *)normalizeUrl {
+- (nullable NSString *)normalizeUrlString {
     // trim C0 controls and spaces
     NSCharacterSet *charsC0SP = [NSCharacterSet characterSetWithRange:NSMakeRange(0, 0x21)];
     NSString *strUrl = [self stringByTrimmingCharactersInSet:charsC0SP];
