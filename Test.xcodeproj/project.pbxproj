@@ -10,6 +10,7 @@
 		293B50B81E852A1000F3746B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 293B50B71E852A1000F3746B /* main.m */; };
 		293B50C01E852FF000F3746B /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 293B50BF1E852FF000F3746B /* NSString+URLEncoding.m */; };
 		29E8A0B71E8BAA1F00E47707 /* UrlTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E8A0B61E8BAA1F00E47707 /* UrlTests.m */; };
+		29E8A0BC1E8BC76700E47707 /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 293B50BF1E852FF000F3746B /* NSString+URLEncoding.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -192,6 +193,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29E8A0BC1E8BC76700E47707 /* NSString+URLEncoding.m in Sources */,
 				29E8A0B71E8BAA1F00E47707 /* UrlTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

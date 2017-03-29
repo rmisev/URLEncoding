@@ -7,16 +7,19 @@
 //
 
 #import <XCTest/XCTest.h>
+#import "NSString+URLEncoding.h"
 
 @interface UrlTests : XCTestCase
 
 @end
+
 
 @implementation UrlTests
 
 - (void)setUp {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
+    [NSString initialize];
 }
 
 - (void)tearDown {
@@ -24,9 +27,9 @@
     [super tearDown];
 }
 
-- (void)testExample {
-    // This is an example of a functional test case.
+- (void)testPercentEncodePath {
     // Use XCTAssert and related functions to verify your tests produce the correct results.
+    XCTAssertEqualObjects((@"-%- \"#<>?`{}").percentEncodeUrlPath, @"-%-%20%22%23%3C%3E%3F%60%7B%7D");
 }
 
 - (void)testPerformanceExample {
