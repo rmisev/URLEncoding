@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		293B50B81E852A1000F3746B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 293B50B71E852A1000F3746B /* main.m */; };
 		293B50C01E852FF000F3746B /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 293B50BF1E852FF000F3746B /* NSString+URLEncoding.m */; };
+		29E8A0B71E8BAA1F00E47707 /* UrlTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E8A0B61E8BAA1F00E47707 /* UrlTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,10 +29,20 @@
 		293B50B71E852A1000F3746B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		293B50BE1E852FF000F3746B /* NSString+URLEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+URLEncoding.h"; path = "URLEncoding/NSString+URLEncoding.h"; sourceTree = "<group>"; };
 		293B50BF1E852FF000F3746B /* NSString+URLEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+URLEncoding.m"; path = "URLEncoding/NSString+URLEncoding.m"; sourceTree = "<group>"; };
+		29E8A0B41E8BAA1F00E47707 /* UrlTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UrlTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		29E8A0B61E8BAA1F00E47707 /* UrlTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UrlTests.m; sourceTree = "<group>"; };
+		29E8A0B81E8BAA1F00E47707 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		293B50B11E852A0F00F3746B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		29E8A0B11E8BAA1F00E47707 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -46,6 +57,7 @@
 			children = (
 				293B50C11E85300B00F3746B /* URLEncoding */,
 				293B50B61E852A1000F3746B /* Test */,
+				29E8A0B51E8BAA1F00E47707 /* UrlTests */,
 				293B50B51E852A1000F3746B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -54,6 +66,7 @@
 			isa = PBXGroup;
 			children = (
 				293B50B41E852A1000F3746B /* Test */,
+				29E8A0B41E8BAA1F00E47707 /* UrlTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -73,6 +86,15 @@
 				293B50BF1E852FF000F3746B /* NSString+URLEncoding.m */,
 			);
 			name = URLEncoding;
+			sourceTree = "<group>";
+		};
+		29E8A0B51E8BAA1F00E47707 /* UrlTests */ = {
+			isa = PBXGroup;
+			children = (
+				29E8A0B61E8BAA1F00E47707 /* UrlTests.m */,
+				29E8A0B81E8BAA1F00E47707 /* Info.plist */,
+			);
+			path = UrlTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -95,6 +117,23 @@
 			productReference = 293B50B41E852A1000F3746B /* Test */;
 			productType = "com.apple.product-type.tool";
 		};
+		29E8A0B31E8BAA1F00E47707 /* UrlTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 29E8A0B91E8BAA1F00E47707 /* Build configuration list for PBXNativeTarget "UrlTests" */;
+			buildPhases = (
+				29E8A0B01E8BAA1F00E47707 /* Sources */,
+				29E8A0B11E8BAA1F00E47707 /* Frameworks */,
+				29E8A0B21E8BAA1F00E47707 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = UrlTests;
+			productName = UrlTests;
+			productReference = 29E8A0B41E8BAA1F00E47707 /* UrlTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -104,6 +143,9 @@
 				LastUpgradeCheck = 0710;
 				TargetAttributes = {
 					293B50B31E852A0F00F3746B = {
+						CreatedOnToolsVersion = 7.1.1;
+					};
+					29E8A0B31E8BAA1F00E47707 = {
 						CreatedOnToolsVersion = 7.1.1;
 					};
 				};
@@ -121,9 +163,20 @@
 			projectRoot = "";
 			targets = (
 				293B50B31E852A0F00F3746B /* Test */,
+				29E8A0B31E8BAA1F00E47707 /* UrlTests */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		29E8A0B21E8BAA1F00E47707 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		293B50B01E852A0F00F3746B /* Sources */ = {
@@ -132,6 +185,14 @@
 			files = (
 				293B50C01E852FF000F3746B /* NSString+URLEncoding.m in Sources */,
 				293B50B81E852A1000F3746B /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		29E8A0B01E8BAA1F00E47707 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				29E8A0B71E8BAA1F00E47707 /* UrlTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -231,6 +292,28 @@
 			};
 			name = Release;
 		};
+		29E8A0BA1E8BAA1F00E47707 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = UrlTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = test.UrlTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		29E8A0BB1E8BAA1F00E47707 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = UrlTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = test.UrlTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -251,6 +334,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		29E8A0B91E8BAA1F00E47707 /* Build configuration list for PBXNativeTarget "UrlTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				29E8A0BA1E8BAA1F00E47707 /* Debug */,
+				29E8A0BB1E8BAA1F00E47707 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
