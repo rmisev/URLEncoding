@@ -158,6 +158,18 @@ static NSRegularExpression *regexInvalidPercent = nil;
         hostRange = authRange;
     }
 
+    // hostname & port
+    NSRange hostnameRange;
+    NSRange portRange;
+    NSUInteger indPortSep = [strUrl rangeOfString:@":" options:NSLiteralSearch range:hostRange].location;
+    if (indPortSep != NSNotFound) {
+        hostnameRange = NSMakeRange(hostRange.location, indPortSep - hostRange.location);
+        portRange = NSMakeRange(indPortSep + 1, NSMaxRange(hostRange) - (indPortSep + 1));
+    } else {
+        hostnameRange = hostRange;
+        portRange = NSMakeRange(0, 0);
+    }
+
     // after authority
     NSRange pathRange = NSMakeRange(0, 0);
     NSRange queryRange = NSMakeRange(0, 0);
