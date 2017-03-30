@@ -15,6 +15,7 @@ static NSMutableCharacterSet *allowedInPath = nil;
 static NSMutableCharacterSet *allowedInQuery = nil;
 static NSCharacterSet *allowedInFragment = nil;
 static NSRegularExpression *regexTabNewline = nil;
+static NSRegularExpression *regexInvalidPercent = nil;
 
 @implementation NSString (URLEncoding)
 
@@ -32,6 +33,7 @@ static NSRegularExpression *regexTabNewline = nil;
                           };
         // https://infra.spec.whatwg.org/#ascii-tab-or-newline
         regexTabNewline = [NSRegularExpression regularExpressionWithPattern:@"[\\t\\n\\r]" options:0 error:nil];
+        regexInvalidPercent = [NSRegularExpression regularExpressionWithPattern:@"%(?![0-9A-Fa-f]{2})" options:0 error:nil];
     }
     if (!endOfAuthChars) {
         endOfAuthChars = [NSCharacterSet characterSetWithCharactersInString:@"/\\?#"];
@@ -61,6 +63,14 @@ static NSRegularExpression *regexTabNewline = nil;
             options:0
             range:NSMakeRange(0, self.length)
             withTemplate:@""];
+}
+
+- (NSString *)percentEncodeInvalidPercents {
+    return [regexInvalidPercent
+            stringByReplacingMatchesInString:self
+            options:0
+            range:NSMakeRange(0, self.length)
+            withTemplate:@"%25"];
 }
 
 - (NSString *)percentEncodeUrlPath {
