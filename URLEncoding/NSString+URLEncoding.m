@@ -113,13 +113,13 @@ static NSRegularExpression *regexInvalidPercent = nil;
     // has scheme?
     NSRange r = [strUrl rangeOfString:@":" options:NSLiteralSearch];
     if (r.location == NSNotFound) return nil;
-    const NSRange rangeOfScheme = NSMakeRange(0, r.location);
+    const NSRange schemeRange = NSMakeRange(0, r.location);
     const NSInteger endOfProtocol = r.location + 1; // skip ":"
 
     // is the scheme supported?
     NSString *scheme = nil;
     for (NSString *specScheme in schemePortDic) {
-        if ([strUrl isEqualIgnoreCase:specScheme range:rangeOfScheme]) {
+        if ([strUrl isEqualIgnoreCase:specScheme range:schemeRange]) {
             scheme = specScheme;
             break;
         }
