@@ -105,6 +105,22 @@ static NSRegularExpression *regexInvalidPercent = nil;
     return ([self compare:aString options:NSCaseInsensitiveSearch range:rangeOfReceiver] == NSOrderedSame);
 }
 
+- (NSInteger)portForSceme:(NSString*)scheme {
+    id val = schemePortDic[scheme];
+    return val != nil ? [val integerValue] : -1;
+}
+
+- (NSInteger)portToInteger:(NSRange)range {
+    NSInteger n = 0;
+    for (NSUInteger i = range.location; i < NSMaxRange(range); i++) {
+        unichar ch = [self characterAtIndex:i];
+        if (ch < '0' || ch > '9') return -1;
+        n = n * 10 + (ch - '0');
+        if (n > 0xFFFF) return -1;
+    }
+    return n;
+}
+
 - (NSRange)findPart:(NSCharacterSet*)partEndChars fromIndex:(NSInteger)indFrom {
     NSRange rangeToSearch = NSMakeRange(indFrom, self.length - indFrom);
     NSRange r = [self rangeOfCharacterFromSet:partEndChars options:NSLiteralSearch range:rangeToSearch];
@@ -170,14 +186,16 @@ static NSRegularExpression *regexInvalidPercent = nil;
 
     // hostname & port
     NSRange hostnameRange;
-    NSRange portRange;
+    NSInteger port;
     NSUInteger indPortSep = [strUrl rangeOfString:@":" options:NSLiteralSearch range:hostRange].location;
     if (indPortSep != NSNotFound) {
         hostnameRange = NSMakeRange(hostRange.location, indPortSep - hostRange.location);
-        portRange = NSMakeRange(indPortSep + 1, NSMaxRange(hostRange) - (indPortSep + 1));
+        NSRange portRange = NSMakeRange(indPortSep + 1, NSMaxRange(hostRange) - (indPortSep + 1));
+        port = [strUrl portToInteger:portRange];
+        if (port < 0) return nil; // error: invalid port
     } else {
         hostnameRange = hostRange;
-        portRange = NSMakeRange(0, 0);
+        port = -1;
     }
 
     // after authority
@@ -212,13 +230,30 @@ static NSRegularExpression *regexInvalidPercent = nil;
     NSMutableString *normUrl = [NSMutableString stringWithCapacity:strUrl.length];
     [normUrl appendString:scheme];
     [normUrl appendString:@"://"];
-    [normUrl appendString:[strUrl substringWithRange:authRange]];
+    // username, password
+    if (usernameRange.length > 0 || passwordRange.length > 0) {
+        [normUrl appendString:[strUrl substringWithRange:usernameRange].percentEncodeUserinfo];
+        if (passwordRange.length > 0) {
+            [normUrl appendString:@":"];
+            [normUrl appendString:[strUrl substringWithRange:passwordRange].percentEncodeUserinfo];
+        }
+        [normUrl appendString:@"@"];
+    }
+    // hostname
+    [normUrl appendString:[strUrl substringWithRange:hostnameRange]];
+    // port
+    if (port >= 0 && port != [self portForSceme:scheme]) {
+        [normUrl appendFormat:@":%d", (int)port];
+    }
+    // path
     if (pathRange.length > 0)
         [normUrl appendString:[strUrl substringWithRange:pathRange].percentEncodeUrlPath];
     else
         [normUrl appendString:@"/"];
+    // query
     if (queryRange.length > 0)
         [normUrl appendString:[strUrl substringWithRange:queryRange].percentEncodeUrlQuery];
+    // fragment
     if (fragmentRange.length > 0)
         [normUrl appendString:[strUrl substringWithRange:fragmentRange].normalizeUrlFragment];
 
