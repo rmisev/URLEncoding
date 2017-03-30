@@ -141,7 +141,7 @@ static NSRegularExpression *regexInvalidPercent = nil;
 
     // after authority
     NSRange pathRange = NSMakeRange(0, 0);
-    NSRange rangeOfQuery = NSMakeRange(0, 0);
+    NSRange queryRange = NSMakeRange(0, 0);
     NSRange rangeOfFragment = NSMakeRange(0, 0);
     NSInteger indexOfCh = NSMaxRange(authRange);
     if (indexOfCh < strUrl.length) {
@@ -155,8 +155,8 @@ static NSRegularExpression *regexInvalidPercent = nil;
             }
         }
         if (ch == '?') {
-            rangeOfQuery = [strUrl findPart:[NSCharacterSet characterSetWithCharactersInString:@"#"] fromIndex:indexOfCh];
-            NSInteger ind = NSMaxRange(rangeOfQuery);
+            queryRange = [strUrl findPart:[NSCharacterSet characterSetWithCharactersInString:@"#"] fromIndex:indexOfCh];
+            NSInteger ind = NSMaxRange(queryRange);
             if (ind < strUrl.length) {
                 indexOfCh = ind;
                 ch = [strUrl characterAtIndex:indexOfCh];
@@ -176,8 +176,8 @@ static NSRegularExpression *regexInvalidPercent = nil;
         [normUrl appendString:[strUrl substringWithRange:pathRange].percentEncodeUrlPath];
     else
         [normUrl appendString:@"/"];
-    if (rangeOfQuery.length > 0)
-        [normUrl appendString:[strUrl substringWithRange:rangeOfQuery].percentEncodeUrlQuery];
+    if (queryRange.length > 0)
+        [normUrl appendString:[strUrl substringWithRange:queryRange].percentEncodeUrlQuery];
     if (rangeOfFragment.length > 0)
         [normUrl appendString:[strUrl substringWithRange:rangeOfFragment].normalizeUrlFragment];
 
