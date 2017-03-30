@@ -75,17 +75,19 @@ static NSRegularExpression *regexInvalidPercent = nil;
 
 - (NSString *)percentEncodeUrlPath {
     return [[self stringByReplacingOccurrencesOfString:@"\\" withString:@"/"]
+            .percentEncodeInvalidPercents
             stringByAddingPercentEncodingWithAllowedCharacters:allowedInPath];
 }
 
 - (NSString *)percentEncodeUrlQuery {
-    return [self
+    return [self.percentEncodeInvalidPercents
             stringByAddingPercentEncodingWithAllowedCharacters:allowedInQuery];
 }
 
 - (NSString *)normalizeUrlFragment {
     // https://url.spec.whatwg.org/#fragment-state
     return [[self stringByReplacingOccurrencesOfString:@"\x00" withString:@""]
+            .percentEncodeInvalidPercents
             stringByAddingPercentEncodingWithAllowedCharacters:allowedInFragment];
 }
 
