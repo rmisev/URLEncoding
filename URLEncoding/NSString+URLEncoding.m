@@ -140,15 +140,15 @@ static NSRegularExpression *regexInvalidPercent = nil;
     const NSRange authRange = [strUrl findPart:endOfAuthChars fromIndex:endOfSlashes];
 
     // after authority
-    NSRange rangeOfPath = NSMakeRange(0, 0);
+    NSRange pathRange = NSMakeRange(0, 0);
     NSRange rangeOfQuery = NSMakeRange(0, 0);
     NSRange rangeOfFragment = NSMakeRange(0, 0);
     NSInteger indexOfCh = NSMaxRange(authRange);
     if (indexOfCh < strUrl.length) {
         unichar ch = [strUrl characterAtIndex:indexOfCh];
         if (ch == '/' || ch == '\\') {
-            rangeOfPath = [strUrl findPart:endOfPathChars fromIndex:indexOfCh];
-            NSInteger ind = NSMaxRange(rangeOfPath);
+            pathRange = [strUrl findPart:endOfPathChars fromIndex:indexOfCh];
+            NSInteger ind = NSMaxRange(pathRange);
             if (ind < strUrl.length) {
                 indexOfCh = ind;
                 ch = [strUrl characterAtIndex:indexOfCh];
@@ -172,8 +172,8 @@ static NSRegularExpression *regexInvalidPercent = nil;
     [normUrl appendString:scheme];
     [normUrl appendString:@"://"];
     [normUrl appendString:[strUrl substringWithRange:authRange]];
-    if (rangeOfPath.length > 0)
-        [normUrl appendString:[strUrl substringWithRange:rangeOfPath].percentEncodeUrlPath];
+    if (pathRange.length > 0)
+        [normUrl appendString:[strUrl substringWithRange:pathRange].percentEncodeUrlPath];
     else
         [normUrl appendString:@"/"];
     if (rangeOfQuery.length > 0)
