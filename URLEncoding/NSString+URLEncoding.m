@@ -105,7 +105,7 @@ static NSRegularExpression *regexInvalidPercent = nil;
     return ([self compare:aString options:NSCaseInsensitiveSearch range:rangeOfReceiver] == NSOrderedSame);
 }
 
-- (NSInteger)portForSceme:(NSString*)scheme {
+- (NSInteger)defaultPortOfScheme:(NSString*)scheme {
     id val = schemePortDic[scheme];
     return val != nil ? [val integerValue] : -1;
 }
@@ -242,7 +242,7 @@ static NSRegularExpression *regexInvalidPercent = nil;
     // hostname
     [normUrl appendString:[strUrl substringWithRange:hostnameRange]];
     // port
-    if (port >= 0 && port != [self portForSceme:scheme]) {
+    if (port >= 0 && port != [self defaultPortOfScheme:scheme]) {
         [normUrl appendFormat:@":%d", (int)port];
     }
     // path
