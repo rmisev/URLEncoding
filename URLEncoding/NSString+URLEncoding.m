@@ -139,6 +139,25 @@ static NSRegularExpression *regexInvalidPercent = nil;
     // authority
     const NSRange authRange = [strUrl findPart:endOfAuthChars fromIndex:endOfSlashes];
 
+    // credentials & host
+    NSRange usernameRange = NSMakeRange(0, 0);
+    NSRange passwordRange = NSMakeRange(0, 0);
+    NSRange hostRange;
+    NSUInteger indEta = [strUrl rangeOfString:@"@" options:NSLiteralSearch|NSBackwardsSearch range:authRange].location;
+    if (indEta != NSNotFound) {
+        NSRange credentialsRange = NSMakeRange(authRange.location, indEta - authRange.location);
+        NSUInteger indColon = [strUrl rangeOfString:@":" options:NSLiteralSearch range:credentialsRange].location;
+        if (indColon != NSNotFound) {
+            usernameRange = NSMakeRange(credentialsRange.location, indColon - credentialsRange.location);
+            passwordRange = NSMakeRange(indColon + 1, indEta - (indColon + 1));
+        } else {
+            usernameRange = credentialsRange;
+        }
+        hostRange = NSMakeRange(indEta + 1, NSMaxRange(authRange) - (indEta + 1));
+    } else {
+        hostRange = authRange;
+    }
+
     // after authority
     NSRange pathRange = NSMakeRange(0, 0);
     NSRange queryRange = NSMakeRange(0, 0);
