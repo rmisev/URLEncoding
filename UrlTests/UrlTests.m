@@ -39,7 +39,7 @@
 
 - (void)testPercentEncodePath {
     // Use XCTAssert and related functions to verify your tests produce the correct results.
-    XCTAssertEqualObjects((@"-%- \"#<>?`{}").percentEncodeUrlPath, @"-%-%20%22%23%3C%3E%3F%60%7B%7D");
+    XCTAssertEqualObjects((@"-%- \"#<>?`{}").percentEncodeUrlPath, @"-%25-%20%22%23%3C%3E%3F%60%7B%7D");
 }
 
 - (void)testPerformanceExample {

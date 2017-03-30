@@ -14,7 +14,7 @@ int main(int argc, const char * argv[]) {
         NSString *str = (@"Percent-%- \"#<>?`{}").percentEncodeUrlPath;
         NSLog(@"Path: %@", str);
         
-        NSURL *url = (@"HTTP://example.com/Percent-%23- \"<>`{}").ParseURL;
+        NSURL *url = (@"HTTP://example.com/Percent-%- \"<>`{}").ParseURL;
         NSLog(@"URL: %@", url);
     }
     return 0;
