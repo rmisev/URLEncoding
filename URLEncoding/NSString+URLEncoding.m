@@ -55,7 +55,7 @@ static NSRegularExpression *regexInvalidPercent = nil;
 
         // https://url.spec.whatwg.org/#query-state
         allowedInQuery = [NSMutableCharacterSet characterSetWithRange:rangeNotC0];
-        [allowedInQuery removeCharactersInString:@"\x22\x23\x3C\x3E"];
+        [allowedInQuery removeCharactersInString:@"\x20\x22\x23\x3C\x3E"];
 
         // https://url.spec.whatwg.org/#c0-control-percent-encode-set
         allowedInFragment = [NSCharacterSet characterSetWithRange:rangeNotC0];
