@@ -137,13 +137,13 @@ static NSRegularExpression *regexInvalidPercent = nil;
         return nil; // error: no host
 
     // authority
-    const NSRange rangeOfAuth = [strUrl findPart:endOfAuthChars fromIndex:endOfSlashes];
+    const NSRange authRange = [strUrl findPart:endOfAuthChars fromIndex:endOfSlashes];
 
     // after authority
     NSRange rangeOfPath = NSMakeRange(0, 0);
     NSRange rangeOfQuery = NSMakeRange(0, 0);
     NSRange rangeOfFragment = NSMakeRange(0, 0);
-    NSInteger indexOfCh = NSMaxRange(rangeOfAuth);
+    NSInteger indexOfCh = NSMaxRange(authRange);
     if (indexOfCh < strUrl.length) {
         unichar ch = [strUrl characterAtIndex:indexOfCh];
         if (ch == '/' || ch == '\\') {
@@ -171,7 +171,7 @@ static NSRegularExpression *regexInvalidPercent = nil;
     NSMutableString *normUrl = [NSMutableString stringWithCapacity:strUrl.length];
     [normUrl appendString:scheme];
     [normUrl appendString:@"://"];
-    [normUrl appendString:[strUrl substringWithRange:rangeOfAuth]];
+    [normUrl appendString:[strUrl substringWithRange:authRange]];
     if (rangeOfPath.length > 0)
         [normUrl appendString:[strUrl substringWithRange:rangeOfPath].percentEncodeUrlPath];
     else
