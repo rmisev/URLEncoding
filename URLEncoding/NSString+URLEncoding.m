@@ -12,6 +12,7 @@ static NSDictionary *schemePortDic = nil;
 static NSCharacterSet *endOfAuthChars = nil;
 static NSCharacterSet *endOfPathChars = nil;
 static NSMutableCharacterSet *allowedInPath = nil;
+static NSMutableCharacterSet *allowedInUserinfo = nil;
 static NSMutableCharacterSet *allowedInQuery = nil;
 static NSCharacterSet *allowedInFragment = nil;
 static NSRegularExpression *regexTabNewline = nil;
@@ -48,6 +49,10 @@ static NSRegularExpression *regexInvalidPercent = nil;
         allowedInPath = [NSMutableCharacterSet characterSetWithRange:rangeNotC0];
         [allowedInPath removeCharactersInString:@" \"#<>?`{}"];
 
+        // https://url.spec.whatwg.org/#userinfo-percent-encode-set
+        allowedInUserinfo = [NSMutableCharacterSet characterSetWithRange:rangeNotC0];
+        [allowedInUserinfo removeCharactersInString:@" \"#<>?`{}/:;=@[\\]^|"];
+
         // https://url.spec.whatwg.org/#query-state
         allowedInQuery = [NSMutableCharacterSet characterSetWithRange:rangeNotC0];
         [allowedInQuery removeCharactersInString:@"\x22\x23\x3C\x3E"];
@@ -77,6 +82,11 @@ static NSRegularExpression *regexInvalidPercent = nil;
     return [[self stringByReplacingOccurrencesOfString:@"\\" withString:@"/"]
             .percentEncodeInvalidPercents
             stringByAddingPercentEncodingWithAllowedCharacters:allowedInPath];
+}
+
+- (NSString *)percentEncodeUserinfo {
+    return [self.percentEncodeInvalidPercents
+            stringByAddingPercentEncodingWithAllowedCharacters:allowedInUserinfo];
 }
 
 - (NSString *)percentEncodeUrlQuery {
