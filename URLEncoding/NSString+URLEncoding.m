@@ -14,7 +14,7 @@ static NSCharacterSet *endOfPathChars = nil;
 static NSMutableCharacterSet *allowedInPath = nil;
 static NSMutableCharacterSet *allowedInQuery = nil;
 static NSCharacterSet *allowedInFragment = nil;
-static NSRegularExpression *regexTabNewline;
+static NSRegularExpression *regexTabNewline = nil;
 
 @implementation NSString (URLEncoding)
 
