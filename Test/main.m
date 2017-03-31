@@ -16,6 +16,8 @@ int main(int argc, const char * argv[]) {
         
         NSURL *url = (@"HTTP://example.com/Percent-%- \"<>`{}").ParseURL;
         NSLog(@"URL: %@", url);
+
+        NSLog(@"NSURL: %@", [NSURL URLWithString:@"http://example.com:80/"]);
     }
     return 0;
 }
