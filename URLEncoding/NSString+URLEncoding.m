@@ -7,22 +7,24 @@
 
 #import "NSString+URLEncoding.h"
 
+@interface UrlStatic : NSObject  {
+    @public NSDictionary *schemePortDic;
+    @public NSCharacterSet *endOfAuthChars;
+    @public NSCharacterSet *endOfPathChars;
+    @public NSMutableCharacterSet *allowedInPath;
+    @public NSMutableCharacterSet *allowedInUserinfo;
+    @public NSMutableCharacterSet *allowedInQuery;
+    @public NSCharacterSet *allowedInFragment;
+    @public NSRegularExpression *regexTabNewline;
+    @public NSRegularExpression *regexInvalidPercent;
+}
++ (UrlStatic *) data;
+@end
 
-static NSDictionary *schemePortDic = nil;
-static NSCharacterSet *endOfAuthChars = nil;
-static NSCharacterSet *endOfPathChars = nil;
-static NSMutableCharacterSet *allowedInPath = nil;
-static NSMutableCharacterSet *allowedInUserinfo = nil;
-static NSMutableCharacterSet *allowedInQuery = nil;
-static NSCharacterSet *allowedInFragment = nil;
-static NSRegularExpression *regexTabNewline = nil;
-static NSRegularExpression *regexInvalidPercent = nil;
+@implementation UrlStatic
 
-@implementation NSString (URLEncoding)
-
-+ (void)initialize
-{
-    if (!schemePortDic) {
+- (instancetype) init {
+    if (self = [super init]) {
         // https://url.spec.whatwg.org/#special-scheme
         schemePortDic = @{
                           @"ftp": @21,
@@ -32,15 +34,16 @@ static NSRegularExpression *regexInvalidPercent = nil;
                           @"ws": @80,
                           @"wss": @443
                           };
+
         // https://infra.spec.whatwg.org/#ascii-tab-or-newline
         regexTabNewline = [NSRegularExpression regularExpressionWithPattern:@"[\\t\\n\\r]" options:0 error:nil];
         regexInvalidPercent = [NSRegularExpression regularExpressionWithPattern:@"%(?![0-9A-Fa-f]{2})" options:0 error:nil];
-    }
-    if (!endOfAuthChars) {
+
+        // end of ... chars
         endOfAuthChars = [NSCharacterSet characterSetWithCharactersInString:@"/\\?#"];
         endOfPathChars = [NSCharacterSet characterSetWithCharactersInString:@"?#"];
-    }
-    if (!allowedInPath) {
+
+        // allowed characters (not percent escaped)
         NSRange rangeNotC0;
         rangeNotC0.location = 0x20;
         rangeNotC0.length = 0x7f - 0x20;
@@ -59,11 +62,29 @@ static NSRegularExpression *regexInvalidPercent = nil;
 
         // https://url.spec.whatwg.org/#c0-control-percent-encode-set
         allowedInFragment = [NSCharacterSet characterSetWithRange:rangeNotC0];
+
+        return self;
     }
+    return nil;
 }
 
++ (UrlStatic *) data {
+    static UrlStatic *sharedInstnce = nil;
+    static dispatch_once_t once;
+
+    dispatch_once(&once, ^{
+        sharedInstnce = [[self alloc] init];
+    });
+    return sharedInstnce;
+}
+
+@end
+
+
+@implementation NSString (URLEncoding)
+
 - (NSString *)stringByRemovingTabNewline {
-    return [regexTabNewline
+    return [UrlStatic.data->regexTabNewline
             stringByReplacingMatchesInString:self
             options:0
             range:NSMakeRange(0, self.length)
@@ -71,7 +92,7 @@ static NSRegularExpression *regexInvalidPercent = nil;
 }
 
 - (NSString *)percentEncodeInvalidPercents {
-    return [regexInvalidPercent
+    return [UrlStatic.data->regexInvalidPercent
             stringByReplacingMatchesInString:self
             options:0
             range:NSMakeRange(0, self.length)
@@ -81,24 +102,24 @@ static NSRegularExpression *regexInvalidPercent = nil;
 - (NSString *)percentEncodeUrlPath {
     return [[self stringByReplacingOccurrencesOfString:@"\\" withString:@"/"]
             .percentEncodeInvalidPercents
-            stringByAddingPercentEncodingWithAllowedCharacters:allowedInPath];
+            stringByAddingPercentEncodingWithAllowedCharacters:UrlStatic.data->allowedInPath];
 }
 
 - (NSString *)percentEncodeUserinfo {
     return [self.percentEncodeInvalidPercents
-            stringByAddingPercentEncodingWithAllowedCharacters:allowedInUserinfo];
+            stringByAddingPercentEncodingWithAllowedCharacters:UrlStatic.data->allowedInUserinfo];
 }
 
 - (NSString *)percentEncodeUrlQuery {
     return [self.percentEncodeInvalidPercents
-            stringByAddingPercentEncodingWithAllowedCharacters:allowedInQuery];
+            stringByAddingPercentEncodingWithAllowedCharacters:UrlStatic.data->allowedInQuery];
 }
 
 - (NSString *)normalizeUrlFragment {
     // https://url.spec.whatwg.org/#fragment-state
     return [[self stringByReplacingOccurrencesOfString:@"\x00" withString:@""]
             .percentEncodeInvalidPercents
-            stringByAddingPercentEncodingWithAllowedCharacters:allowedInFragment];
+            stringByAddingPercentEncodingWithAllowedCharacters:UrlStatic.data->allowedInFragment];
 }
 
 - (BOOL)isEqualIgnoreCase:(NSString *)aString range:(NSRange)rangeOfReceiver {
@@ -106,7 +127,7 @@ static NSRegularExpression *regexInvalidPercent = nil;
 }
 
 - (NSInteger)defaultPortOfScheme:(NSString*)scheme {
-    id val = schemePortDic[scheme];
+    id val = UrlStatic.data->schemePortDic[scheme];
     return val != nil ? [val integerValue] : -1;
 }
 
@@ -144,7 +165,7 @@ static NSRegularExpression *regexInvalidPercent = nil;
 
     // is the scheme supported?
     NSString *scheme = nil;
-    for (NSString *specScheme in schemePortDic) {
+    for (NSString *specScheme in UrlStatic.data->schemePortDic) {
         if ([strUrl isEqualIgnoreCase:specScheme range:schemeRange]) {
             scheme = specScheme;
             break;
@@ -163,7 +184,7 @@ static NSRegularExpression *regexInvalidPercent = nil;
         return nil; // error: no host
 
     // authority
-    const NSRange authRange = [strUrl findPart:endOfAuthChars fromIndex:endOfSlashes];
+    const NSRange authRange = [strUrl findPart:UrlStatic.data->endOfAuthChars fromIndex:endOfSlashes];
 
     // credentials & host
     NSRange usernameRange = NSMakeRange(0, 0);
@@ -206,7 +227,7 @@ static NSRegularExpression *regexInvalidPercent = nil;
     if (indexOfCh < strUrl.length) {
         unichar ch = [strUrl characterAtIndex:indexOfCh];
         if (ch == '/' || ch == '\\') {
-            pathRange = [strUrl findPart:endOfPathChars fromIndex:indexOfCh];
+            pathRange = [strUrl findPart:UrlStatic.data->endOfPathChars fromIndex:indexOfCh];
             NSInteger ind = NSMaxRange(pathRange);
             if (ind < strUrl.length) {
                 indexOfCh = ind;
