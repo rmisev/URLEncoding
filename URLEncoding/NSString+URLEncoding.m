@@ -63,6 +63,17 @@
         // https://url.spec.whatwg.org/#c0-control-percent-encode-set
         allowedInFragment = [NSCharacterSet characterSetWithRange:rangeNotC0];
 
+#if !__has_feature(objc_arc)
+        [schemePortDic retain];
+        [endOfAuthChars retain];
+        [endOfPathChars retain];
+        [allowedInPath retain];
+        [allowedInUserinfo retain];
+        [allowedInQuery retain];
+        [allowedInFragment retain];
+        [regexTabNewline retain];
+        [regexInvalidPercent retain];
+#endif
         return self;
     }
     return nil;
