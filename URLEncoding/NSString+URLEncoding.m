@@ -56,12 +56,13 @@
         allowedInUserinfo = [NSMutableCharacterSet characterSetWithRange:rangeNotC0];
         [allowedInUserinfo removeCharactersInString:@" \"#<>?`{}/:;=@[\\]^|"];
 
-        // https://url.spec.whatwg.org/#query-state
+        // https://url.spec.whatwg.org/#query-percent-encode-set
         allowedInQuery = [NSMutableCharacterSet characterSetWithRange:rangeNotC0];
-        [allowedInQuery removeCharactersInString:@"\x20\x22\x23\x3C\x3E"];
+        [allowedInQuery removeCharactersInString:@" \"#<>"];
 
-        // https://url.spec.whatwg.org/#c0-control-percent-encode-set
-        allowedInFragment = [NSCharacterSet characterSetWithRange:rangeNotC0];
+        // https://url.spec.whatwg.org/#fragment-percent-encode-set
+        allowedInFragment = [NSMutableCharacterSet characterSetWithRange:rangeNotC0];
+        [allowedInFragment removeCharactersInString:@" \"<>`"];
 
 #if !__has_feature(objc_arc)
         [schemePortDic retain];
@@ -127,9 +128,7 @@
 }
 
 - (NSString *)normalizeUrlFragment {
-    // https://url.spec.whatwg.org/#fragment-state
-    return [[self stringByReplacingOccurrencesOfString:@"\x00" withString:@""]
-            .percentEncodeInvalidPercents
+    return [self.percentEncodeInvalidPercents
             stringByAddingPercentEncodingWithAllowedCharacters:UrlStatic.data->allowedInFragment];
 }
 
